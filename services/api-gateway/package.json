@@ -1,0 +1,25 @@
+{
+  "name": "@document-context-test/api-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Express API gateway for document-context-test",
+  "type": "module",
+  "main": "dist/interfaces/http/main.js",
+  "scripts": {
+    "dev": "tsx watch src/interfaces/http/main.ts",
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/interfaces/http/main.js",
+    "migrate": "tsx src/infrastructure/database/MigrationRunner.ts",
+    "lint": "eslint \"src/**/*.ts\"",
+    "test": "jest --passWithNoTests"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/pg": "^8.11.5",
+    "tsx": "^4.9.3"
+  }
+}
