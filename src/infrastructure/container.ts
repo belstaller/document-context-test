@@ -18,6 +18,7 @@ import { UpdateDocumentUseCase } from '../application/use-cases/UpdateDocumentUs
 import { ArchivePetListingUseCase } from '../application/use-cases/ArchivePetListingUseCase.js';
 import { CreatePetListingUseCase } from '../application/use-cases/CreatePetListingUseCase.js';
 import { GetPetListingUseCase } from '../application/use-cases/GetPetListingUseCase.js';
+import { ListPetListingsUseCase } from '../application/use-cases/ListPetListingsUseCase.js';
 import { ListShelterPetListingsUseCase } from '../application/use-cases/ListShelterPetListingsUseCase.js';
 import { UpdatePetListingUseCase } from '../application/use-cases/UpdatePetListingUseCase.js';
 import { DatabaseClient } from './database/DatabaseClient.js';
@@ -53,5 +54,6 @@ export const getPetListingUseCase = new GetPetListingUseCase(petListingRepositor
 export const updatePetListingUseCase = new UpdatePetListingUseCase(petListingRepository);
 export const archivePetListingUseCase = new ArchivePetListingUseCase(petListingRepository);
 export const listShelterPetListingsUseCase = new ListShelterPetListingsUseCase(petListingRepository);
+export const listPetListingsUseCase = new ListPetListingsUseCase(petListingRepository);
 
 export { db };

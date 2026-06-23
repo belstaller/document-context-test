@@ -16,6 +16,7 @@ import type { NextFunction, Request, Response } from 'express';
 import type { ArchivePetListingUseCase } from '../../../application/use-cases/ArchivePetListingUseCase.js';
 import type { CreatePetListingUseCase } from '../../../application/use-cases/CreatePetListingUseCase.js';
 import type { GetPetListingUseCase } from '../../../application/use-cases/GetPetListingUseCase.js';
+import type { ListPetListingsUseCase } from '../../../application/use-cases/ListPetListingsUseCase.js';
 import type { ListShelterPetListingsUseCase } from '../../../application/use-cases/ListShelterPetListingsUseCase.js';
 import type { UpdatePetListingUseCase } from '../../../application/use-cases/UpdatePetListingUseCase.js';
 
@@ -26,6 +27,7 @@ export class PetListingController {
     private readonly updatePetListing: UpdatePetListingUseCase,
     private readonly archivePetListing: ArchivePetListingUseCase,
     private readonly listShelterPetListings: ListShelterPetListingsUseCase,
+    private readonly listPetListings: ListPetListingsUseCase,
   ) {}
 
   // POST /admin/shelters/:shelterId/pet-listings
@@ -217,6 +219,54 @@ export class PetListingController {
       }
 
       const result = await this.archivePetListing.execute({ listingId: id, shelterId });
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // GET /pets — public browsing endpoint
+  list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const query = req.query as Record<string, string | undefined>;
+      const species = query['species'];
+      const breed = query['breed'];
+      const ageMinRaw = query['ageMin'];
+      const ageMaxRaw = query['ageMax'];
+      const pageRaw = query['page'];
+      const limitRaw = query['limit'];
+
+      const parsedAgeMin = ageMinRaw !== undefined ? parseInt(ageMinRaw, 10) : undefined;
+      const parsedAgeMax = ageMax !== undefined ? parseInt(ageMax, 10) : undefined;
+      const parsedPage = page !== undefined ? parseInt(page, 10) : undefined;
+      const parsedLimit = limit !== undefined ? parseInt(limit, 10) : undefined;
+
+      if (parsedAgeMin !== undefined && isNaN(parsedAgeMin)) {
+        res.status(400).json({ error: 'Query param "ageMin" must be a number.' });
+        return;
+      }
+      if (parsedAgeMax !== undefined && isNaN(parsedAgeMax)) {
+        res.status(400).json({ error: 'Query param "ageMax" must be a number.' });
+        return;
+      }
+      if (parsedPage !== undefined && isNaN(parsedPage)) {
+        res.status(400).json({ error: 'Query param "page" must be a number.' });
+        return;
+      }
+      if (parsedLimit !== undefined && isNaN(parsedLimit)) {
+        res.status(400).json({ error: 'Query param "limit" must be a number.' });
+        return;
+      }
+
+      const result = await this.listPetListings.execute({
+        ...(species !== undefined && { species }),
+        ...(breed !== undefined && { breed }),
+        ...(parsedAgeMin !== undefined && { ageMin: parsedAgeMin }),
+        ...(parsedAgeMax !== undefined && { ageMax: parsedAgeMax }),
+        ...(parsedPage !== undefined && { page: parsedPage }),
+        ...(parsedLimit !== undefined && { limit: parsedLimit }),
+      });
+
       res.status(200).json(result);
     } catch (err) {
       next(err);

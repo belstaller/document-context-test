@@ -9,7 +9,11 @@
 
 import { PetListing } from '../../domain/entities/PetListing.js';
 import type { PetListingStatus } from '../../domain/entities/PetListing.js';
-import type { IPetListingRepository } from '../../domain/repositories/IPetListingRepository.js';
+import type {
+  IPetListingRepository,
+  PetListingFilters,
+  PetListingPage,
+} from '../../domain/repositories/IPetListingRepository.js';
 import { PetAge } from '../../domain/value-objects/PetAge.js';
 import { PetListingId } from '../../domain/value-objects/PetListingId.js';
 import { ShelterId } from '../../domain/value-objects/ShelterId.js';
@@ -86,6 +90,50 @@ export class PostgresPetListingRepository implements IPetListingRepository {
       [shelterId.value],
     );
     return rows.map((r) => this.toDomain(r));
+  }
+
+  async findActive(filters: PetListingFilters, page: number, limit: number): Promise<PetListingPage> {
+    const conditions: string[] = ["status = 'active'"];
+    const params: unknown[] = [];
+
+    if (filters.species !== undefined) {
+      params.push(`%${filters.species}%`);
+      conditions.push(`species ILIKE ${params.length}`);
+    }
+    if (filters.breed !== undefined) {
+      params.push(`%${filters.breed}%`);
+      conditions.push(`breed ILIKE ${params.length}`);
+    }
+    if (filters.ageMin !== undefined) {
+      params.push(filters.ageMin);
+      conditions.push(`age_months >= ${params.length}`);
+    }
+    if (filters.ageMax !== undefined) {
+      params.push(filters.ageMax);
+      conditions.push(`age_months <= ${params.length}`);
+    }
+
+    const where = conditions.join(' AND ');
+
+    // Count query
+    const countRows = await this.db.query<{ count: string }>(
+      `SELECT COUNT(*) AS count FROM pet_listings WHERE ${where}`,
+      params,
+    );
+    const total = parseInt(countRows[0]?.count ?? '0', 10);
+
+    // Data query
+    params.push(limit);
+    const limitParam = params.length;
+    params.push(page * limit);
+    const offsetParam = params.length;
+
+    const rows = await this.db.query<PetListingRow>(
+      `SELECT * FROM pet_listings WHERE ${where} ORDER BY created_at DESC LIMIT ${limitParam} OFFSET ${offsetParam}`,
+      params,
+    );
+
+    return { items: rows.map((r) => this.toDomain(r)), total };
   }
 
   async delete(id: PetListingId): Promise<void> {

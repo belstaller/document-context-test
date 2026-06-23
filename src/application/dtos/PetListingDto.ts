@@ -53,6 +53,27 @@ export interface ListShelterPetListingsDto {
   shelterId: string;
 }
 
+export interface ListPetListingsDto {
+  species?: string;
+  breed?: string;
+  /** Minimum age in months (inclusive). */
+  ageMin?: number;
+  /** Maximum age in months (inclusive). */
+  ageMax?: number;
+  /** Zero-based page index. */
+  page?: number;
+  /** Number of results per page (1–100). */
+  limit?: number;
+}
+
+export interface PetListingsPageDto {
+  items: PetListingResponseDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 // ─── Output DTOs ─────────────────────────────────────────────────────────────
 
 export interface PetListingResponseDto {

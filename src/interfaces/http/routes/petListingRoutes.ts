@@ -1,7 +1,10 @@
 /**
- * petListingRoutes — registers all pet listing admin HTTP routes.
+ * petListingRoutes — registers all pet listing HTTP routes.
  *
- * Routes are mounted under /api/admin by the server:
+ * Public routes (mounted under /api by the server):
+ *   GET    /api/pets                                          — browse active listings
+ *
+ * Admin routes (mounted under /api/admin by the server):
  *   POST   /api/admin/shelters/:shelterId/pet-listings        — create listing
  *   GET    /api/admin/shelters/:shelterId/pet-listings        — list by shelter
  *   GET    /api/admin/pet-listings/:id                        — get single listing
@@ -14,6 +17,12 @@
 import { Router } from 'express';
 
 import type { PetListingController } from '../controllers/PetListingController.js';
+
+export function createPublicPetListingRouter(controller: PetListingController): Router {
+  const router = Router();
+  router.get('/', controller.list);
+  return router;
+}
 
 export function createPetListingRouter(controller: PetListingController): Router {
   const router = Router();

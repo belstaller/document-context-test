@@ -15,6 +15,7 @@ import {
   createPetListingUseCase,
   getDocumentUseCase,
   getPetListingUseCase,
+  listPetListingsUseCase,
   listShelterPetListingsUseCase,
   listUserDocumentsUseCase,
   publishDocumentUseCase,
@@ -29,7 +30,7 @@ import { UserController } from './controllers/UserController.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { createDocumentRouter } from './routes/documentRoutes.js';
-import { createPetListingRouter } from './routes/petListingRoutes.js';
+import { createPetListingRouter, createPublicPetListingRouter } from './routes/petListingRoutes.js';
 import { createUserRouter } from './routes/userRoutes.js';
 
 export function createApp(): express.Application {
@@ -55,6 +56,7 @@ export function createApp(): express.Application {
     updatePetListingUseCase,
     archivePetListingUseCase,
     listShelterPetListingsUseCase,
+    listPetListingsUseCase,
   );
 
   // ─── Routes ───────────────────────────────────────────────────────────────
@@ -64,6 +66,7 @@ export function createApp(): express.Application {
 
   app.use('/api/documents', createDocumentRouter(documentController));
   app.use('/api/users', createUserRouter(userController, documentController));
+  app.use('/api/pets', createPublicPetListingRouter(petListingController));
   app.use('/api/admin', createPetListingRouter(petListingController));
 
   // ─── Error Handler (must be last) ─────────────────────────────────────────
