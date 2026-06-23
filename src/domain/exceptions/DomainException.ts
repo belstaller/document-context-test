@@ -42,3 +42,10 @@ export class PetListingNotFoundException extends DomainException {
     this.name = 'PetListingNotFoundException';
   }
 }
+
+export class ShelterNotFoundException extends DomainException {
+  constructor(shelterId: string) {
+    super(`Shelter with id "${shelterId}" was not found.`);
+    this.name = 'ShelterNotFoundException';
+  }
+}

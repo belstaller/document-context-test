@@ -15,7 +15,9 @@ import {
   createPetListingUseCase,
   getDocumentUseCase,
   getPetListingUseCase,
+  getShelterUseCase,
   listShelterPetListingsUseCase,
+  listSheltersUseCase,
   listUserDocumentsUseCase,
   publishDocumentUseCase,
   registerUserUseCase,
@@ -25,11 +27,13 @@ import {
 } from '../../infrastructure/container.js';
 import { DocumentController } from './controllers/DocumentController.js';
 import { PetListingController } from './controllers/PetListingController.js';
+import { ShelterController } from './controllers/ShelterController.js';
 import { UserController } from './controllers/UserController.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { createDocumentRouter } from './routes/documentRoutes.js';
 import { createPetListingRouter } from './routes/petListingRoutes.js';
+import { createShelterRouter } from './routes/shelterRoutes.js';
 import { createUserRouter } from './routes/userRoutes.js';
 
 export function createApp(): express.Application {
@@ -56,6 +60,7 @@ export function createApp(): express.Application {
     archivePetListingUseCase,
     listShelterPetListingsUseCase,
   );
+  const shelterController = new ShelterController(getShelterUseCase, listSheltersUseCase);
 
   // ─── Routes ───────────────────────────────────────────────────────────────
   app.get('/health', (_req, res) => {
@@ -65,6 +70,7 @@ export function createApp(): express.Application {
   app.use('/api/documents', createDocumentRouter(documentController));
   app.use('/api/users', createUserRouter(userController, documentController));
   app.use('/api/admin', createPetListingRouter(petListingController));
+  app.use('/api/shelters', createShelterRouter(shelterController));
 
   // ─── Error Handler (must be last) ─────────────────────────────────────────
   app.use(errorHandler);

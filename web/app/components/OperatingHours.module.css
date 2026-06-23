@@ -1,0 +1,67 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.table tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table tr:last-child {
+  border-bottom: none;
+}
+
+.dayCell {
+  font-weight: 500;
+  text-align: left;
+  padding: 0.6rem 0.75rem 0.6rem 0;
+  color: var(--color-text);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.hoursCell {
+  text-align: right;
+  padding: 0.6rem 0;
+  color: var(--color-muted);
+  vertical-align: middle;
+}
+
+.today {
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 4px;
+}
+
+.today .dayCell,
+.today .hoursCell {
+  color: var(--color-text);
+}
+
+.today .open {
+  color: #86efac;
+  font-weight: 600;
+}
+
+.todayBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  background: rgba(99, 102, 241, 0.25);
+  color: #a5b4fc;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+
+.open {
+  color: var(--color-text);
+}
+
+.closed {
+  color: var(--color-muted);
+  font-style: italic;
+}

@@ -18,12 +18,15 @@ import { UpdateDocumentUseCase } from '../application/use-cases/UpdateDocumentUs
 import { ArchivePetListingUseCase } from '../application/use-cases/ArchivePetListingUseCase.js';
 import { CreatePetListingUseCase } from '../application/use-cases/CreatePetListingUseCase.js';
 import { GetPetListingUseCase } from '../application/use-cases/GetPetListingUseCase.js';
+import { GetShelterUseCase } from '../application/use-cases/GetShelterUseCase.js';
 import { ListShelterPetListingsUseCase } from '../application/use-cases/ListShelterPetListingsUseCase.js';
+import { ListSheltersUseCase } from '../application/use-cases/ListSheltersUseCase.js';
 import { UpdatePetListingUseCase } from '../application/use-cases/UpdatePetListingUseCase.js';
 import { DatabaseClient } from './database/DatabaseClient.js';
 import { DocumentProcessingHttpClient } from './http/DocumentProcessingHttpClient.js';
 import { PostgresDocumentRepository } from './repositories/PostgresDocumentRepository.js';
 import { PostgresPetListingRepository } from './repositories/PostgresPetListingRepository.js';
+import { PostgresShelterRepository } from './repositories/PostgresShelterRepository.js';
 import { PostgresUserRepository } from './repositories/PostgresUserRepository.js';
 
 // ─── Singletons ──────────────────────────────────────────────────────────────
@@ -34,6 +37,7 @@ const documentRepository = new PostgresDocumentRepository(db);
 const userRepository = new PostgresUserRepository(db);
 const documentProcessingService = new DocumentProcessingHttpClient();
 const petListingRepository = new PostgresPetListingRepository(db);
+const shelterRepository = new PostgresShelterRepository(db);
 
 // ─── Use Case Factories ───────────────────────────────────────────────────────
 
@@ -53,5 +57,8 @@ export const getPetListingUseCase = new GetPetListingUseCase(petListingRepositor
 export const updatePetListingUseCase = new UpdatePetListingUseCase(petListingRepository);
 export const archivePetListingUseCase = new ArchivePetListingUseCase(petListingRepository);
 export const listShelterPetListingsUseCase = new ListShelterPetListingsUseCase(petListingRepository);
+
+export const getShelterUseCase = new GetShelterUseCase(shelterRepository);
+export const listSheltersUseCase = new ListSheltersUseCase(shelterRepository);
 
 export { db };
