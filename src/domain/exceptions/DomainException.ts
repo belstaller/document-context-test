@@ -35,3 +35,10 @@ export class UnauthorisedAccessException extends DomainException {
     this.name = 'UnauthorisedAccessException';
   }
 }
+
+export class PetListingNotFoundException extends DomainException {
+  constructor(listingId: string) {
+    super(`Pet listing with id "${listingId}" was not found.`);
+    this.name = 'PetListingNotFoundException';
+  }
+}

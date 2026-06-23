@@ -12,12 +12,17 @@ import type { ErrorRequestHandler } from 'express';
 import {
   DomainException,
   DocumentNotFoundException,
+  PetListingNotFoundException,
   UnauthorisedAccessException,
   UserNotFoundException,
 } from '../../../domain/exceptions/DomainException.js';
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  if (err instanceof DocumentNotFoundException || err instanceof UserNotFoundException) {
+  if (
+    err instanceof DocumentNotFoundException ||
+    err instanceof UserNotFoundException ||
+    err instanceof PetListingNotFoundException
+  ) {
     res.status(404).json({ error: err.message });
     return;
   }

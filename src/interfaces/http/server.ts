@@ -10,19 +10,26 @@
 import express from 'express';
 
 import {
+  archivePetListingUseCase,
   createDocumentUseCase,
+  createPetListingUseCase,
   getDocumentUseCase,
+  getPetListingUseCase,
+  listShelterPetListingsUseCase,
   listUserDocumentsUseCase,
   publishDocumentUseCase,
   registerUserUseCase,
   summariseDocumentUseCase,
   updateDocumentUseCase,
+  updatePetListingUseCase,
 } from '../../infrastructure/container.js';
 import { DocumentController } from './controllers/DocumentController.js';
+import { PetListingController } from './controllers/PetListingController.js';
 import { UserController } from './controllers/UserController.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { createDocumentRouter } from './routes/documentRoutes.js';
+import { createPetListingRouter } from './routes/petListingRoutes.js';
 import { createUserRouter } from './routes/userRoutes.js';
 
 export function createApp(): express.Application {
@@ -42,6 +49,13 @@ export function createApp(): express.Application {
     summariseDocumentUseCase,
   );
   const userController = new UserController(registerUserUseCase);
+  const petListingController = new PetListingController(
+    createPetListingUseCase,
+    getPetListingUseCase,
+    updatePetListingUseCase,
+    archivePetListingUseCase,
+    listShelterPetListingsUseCase,
+  );
 
   // ─── Routes ───────────────────────────────────────────────────────────────
   app.get('/health', (_req, res) => {
@@ -50,6 +64,7 @@ export function createApp(): express.Application {
 
   app.use('/api/documents', createDocumentRouter(documentController));
   app.use('/api/users', createUserRouter(userController, documentController));
+  app.use('/api/admin', createPetListingRouter(petListingController));
 
   // ─── Error Handler (must be last) ─────────────────────────────────────────
   app.use(errorHandler);
